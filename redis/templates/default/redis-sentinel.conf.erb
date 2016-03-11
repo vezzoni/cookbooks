@@ -1,0 +1,8 @@
+port <%= node[:sentinel][:port] %>
+dir <%= node[:sentinel][:dir] %>
+logfile <%= node[:sentinel][:logfile] %>
+
+sentinel monitor <%= node[:sentinel][:master_name] %> <%= node[:sentinel][:master_ip] %> <%= node[:redis][:port] %> 2
+sentinel down-after-milliseconds <%= node[:sentinel][:master_name] %> 500
+sentinel failover-timeout <%= node[:sentinel][:master_name] %> 300
+sentinel config-epoch <%= node[:sentinel][:master_name] %> 466288

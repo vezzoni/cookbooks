@@ -1,0 +1,39 @@
+#!/bin/bash
+
+NAME=redis-sentinel
+BIN=/usr/bin/redis-server
+SENTINEL_PID=/var/run/redis-sentinel.pid
+
+CMD=$1
+
+start() {
+        echo "Starting $NAME ..."
+        exec 2>&1 $BIN /etc/redis-sentinel.conf --sentinel > /var/log/redis-sentinel.log 2>&1 &
+        echo $! > "${SENTINEL_PID}";
+}
+
+stop() {
+        PID=`cat $SENTINEL_PID`
+        echo "Stopping $NAME ($PID) ..."
+        kill $PID
+}
+
+restart() {
+        echo "Restarting $NAME ..."
+        stop
+        start
+}
+
+case "$CMD" in
+        start)
+                start
+                ;;
+        stop)
+                stop
+                ;;
+        restart)
+                restart
+                ;;
+        *)
+                echo "Usage $0 {start|stop|restart}"
+esac
