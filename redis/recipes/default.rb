@@ -7,22 +7,22 @@ template 'redis.conf' do
   source 'redis.conf.erb'
 end
 
+service 'redis' do
+  action [:enable, :start]
+end
+
 template 'redis-sentinel.conf' do
   path "/etc/redis-sentinel.conf"
   source 'redis-sentinel.conf.erb'
 end
 
-service 'redis' do
-  action [:enable, :start]
-end
-
-cookbook_file "/etc/init.d/redis-sentinel" do
-        owner "root"
-        group "root"
-        mode 0755
-        source "etc/init.d/redis-sentinel"
-        action :create
-        notifies :run, 'execute[create_init-script]', :delayed
+template 'redis-sentinel' do
+  owner "root"
+  group "root"
+  mode 0755
+  path "/etc/init.d/redis-sentinel"
+  source 'redis-sentinel.erb'
+  notifies :run, 'execute[create_init-script]', :immediate
 end
 
 execute "create_init-script" do
@@ -30,8 +30,7 @@ execute "create_init-script" do
         action :run
 end
 
-service 'redis-sentinel' do
-  supports :status => true, :restart => true, :reload => true
-  action [:enable, :start]
+execute "start-script" do
+        command "sudo service redis-sentinel start"
+        action :run
 end
-

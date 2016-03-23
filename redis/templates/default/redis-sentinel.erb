@@ -1,14 +1,16 @@
 #!/bin/bash
 
-NAME=redis-sentinel
-BIN=/usr/bin/redis-server
-SENTINEL_PID=/var/run/redis-sentinel.pid
+NAME=<%= node[:sentinel][:name] %>
+BIN=<%= node[:sentinel][:bin] %>
+SENTINEL_PID=<%= node[:sentinel][:pid] %>
+SENTINEL_CONF=<%= node[:sentinel][:conf] %>
+SENTINEL_LOG=<%= node[:sentinel][:log] %>
 
 CMD=$1
 
 start() {
         echo "Starting $NAME..."
-        sudo $BIN /etc/redis-sentinel.conf --sentinel > /var/log/redis-sentinel.log
+        sudo $BIN $SENTINEL_CONF --sentinel > $SENTINEL_LOG
         echo "$NAME started"
 }
 
@@ -16,10 +18,10 @@ stop() {
         PID=$(cat $SENTINEL_PID)
         if [ -f "${SENTINEL_PID}" ]
         then
-                kill $PID
+                sudo kill $PID
                 while [ -x /proc/${PID} ]
                 do
-                    echo "Waiting for Redis sentinel to shutdown ..."
+                    echo "Waiting for $NAME to shutdown ..."
                     sleep 1
                 done
         fi

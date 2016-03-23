@@ -4,11 +4,16 @@ default[:redis][:log_dir]   = "/var/log/redis"
 # one of: debug, verbose, notice, warning
 default[:redis][:loglevel]  = "debug"
 default[:redis][:user]      = "redis"
-default[:redis][:port]      = 6379
+default[:redis][:port]      = "6379"
 default[:redis][:bind]      = "0.0.0.0"
 
+default[:sentinel][:name]        = "redis-sentinel"
+default[:sentinel][:bin]         = "/usr/bin/redis-server"
 default[:sentinel][:port]        = "26379"
 default[:sentinel][:master_name] = "master1"
 default[:sentinel][:master_ip]   = "127.0.0.1"
-default[:sentinel][:logfile]     = "/var/log/redis-sentinel.log"
+default[:sentinel][:quorum]      = "2"
+default[:sentinel][:conf]        = "/etc/redis-sentinel.conf"
+default[:sentinel][:log]         = "/var/log/redis-sentinel.log"
+default[:sentinel][:pid]         = "/var/run/redis-sentinel.pid"
 default[:sentinel][:dir]         = "/var/log"
